@@ -49,8 +49,10 @@ void JukeBox::next()
 
 void JukeBox::playMusic(const string &musicPath)
 {
-    if (openFromFile(musicPath))
+    if (openFromFile(musicPath)) {
         play();
+        threadList.emplace_back(&JukeBox::autoNext, this);
+    }
     else
         throw string("\"" + musicPath + "\" can not be open");
 }
@@ -96,6 +98,8 @@ void JukeBox::autoNext()
     const Int64 toWait = (getDuration() - getPlayingOffset() + seconds(0.1)).asMicroseconds();
 
     this_thread::sleep_for(chrono::microseconds(toWait));
-    if (getStatus() == SoundSource::Stopped && !noNext)
+    if (noNext)
+        return;
+    if (getStatus() == SoundSource::Stopped)
         next();
 }
