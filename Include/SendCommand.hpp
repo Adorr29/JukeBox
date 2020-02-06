@@ -21,9 +21,9 @@ public:
     void doWrite(const string &data);
 
 private:
-    void onConnect(boost::system::error_code ec);
-    void onRead(shared_ptr<string> data, boost::system::error_code ec);
-    void onWrite(boost::system::error_code ec);
+    void onConnect(const ErrorCode &errorCode);
+    void onRead(shared_ptr<string> data, const ErrorCode &errorCode);
+    void onWrite(const ErrorCode &errorCode);
 
 private:
     IoService ioService;

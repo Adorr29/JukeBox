@@ -39,9 +39,9 @@ void SendCommand::doWrite(const string &data)
                 boost::bind(&SendCommand::onWrite, this, ErrorPlaceholders));
 }
 
-void SendCommand::onConnect(boost::system::error_code ec)
+void SendCommand::onConnect(const ErrorCode &errorCode)
 {
-    if (!ec) {
+    if (!errorCode) {
         doRead();
         doWrite(command);
     }
@@ -49,17 +49,17 @@ void SendCommand::onConnect(boost::system::error_code ec)
         cerr << "Connect failed" << endl;
 }
 
-void SendCommand::onRead(shared_ptr<string> data, boost::system::error_code ec)
+void SendCommand::onRead(shared_ptr<string> data, const ErrorCode &errorCode)
 {
-    if (!ec)
+    if (!errorCode)
         cout << *data << endl;
     else
         socket.close();
 }
 
-void SendCommand::onWrite(boost::system::error_code ec)
+void SendCommand::onWrite(const ErrorCode &errorCode)
 {
-    if (!ec) {
+    if (!errorCode) {
         //
     }
     else
