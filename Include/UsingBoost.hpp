@@ -12,7 +12,6 @@
 
 using boost::asio::ip::address;
 
-
 typedef boost::asio::io_service IoService;
 typedef boost::asio::ip::tcp::endpoint TcpEndpoint;
 typedef boost::asio::ip::tcp::acceptor TcpAcceptor;
