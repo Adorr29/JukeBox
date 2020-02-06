@@ -31,6 +31,11 @@ JukeBox::~JukeBox()
     }
 }
 
+const string JukeBox::getCurrentMusicPath() const
+{
+    return currentMusicPath;
+}
+
 void JukeBox::next()
 {
     if (playList.empty())
@@ -50,6 +55,7 @@ void JukeBox::next()
 void JukeBox::playMusic(const string &musicPath)
 {
     if (openFromFile(musicPath)) {
+        currentMusicPath = musicPath;
         play();
         threadList.emplace_back(&JukeBox::autoNext, this);
     }
@@ -95,11 +101,19 @@ vector<string> JukeBox::getAllFileName(const string &directoryPath)
 
 void JukeBox::autoNext()
 {
-    const Int64 toWait = (getDuration() - getPlayingOffset() + seconds(0.1)).asMicroseconds();
+    const string musicPathAtRun = currentMusicPath;
 
-    this_thread::sleep_for(chrono::microseconds(toWait));
-    if (noNext)
-        return;
-    if (getStatus() == SoundSource::Stopped)
-        next();
+    while (true) {
+        const Int64 toWait = (getDuration() - getPlayingOffset()).asMicroseconds();
+
+        this_thread::sleep_for(chrono::microseconds(toWait));
+        if (noNext)
+            return;
+        if (currentMusicPath != musicPathAtRun)
+            return;
+        if (getStatus() == SoundSource::Stopped) {
+            next();
+            return;
+        }
+    }
 }

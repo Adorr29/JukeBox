@@ -21,6 +21,7 @@ class JukeBox : public Music
 public:
     JukeBox(const string &musicDirectoryPath, const ushort &port = DefaultPort);
     ~JukeBox();
+    const string getCurrentMusicPath() const;
     void next();
     void playMusic(const string &musicPath);
     void exit();
@@ -32,12 +33,11 @@ private:
     void autoNext();
 
 private:
+    IoService ioService;
+    TcpAcceptor acceptor;
     vector<string> flieNameList;
     vector<string> playList;
     list<thread> threadList;
-
-private:
-    IoService ioService;
-    TcpAcceptor acceptor;
+    string currentMusicPath;
     bool noNext;
 };
