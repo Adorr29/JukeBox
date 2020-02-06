@@ -36,15 +36,15 @@ void JukeBox::next()
     if (playList.empty())
         playList = flieNameList;
     const size_t npa = rand() % playList.size();
-    const bool success = openFromFile(playList[npa]);
+    const string musicPath = playList[npa];
 
     playList.erase(playList.begin() + npa);
-    if (success) {
-        play();
-        threadList.emplace_back(&JukeBox::autoNext, this);
+    try {
+        playMusic(musicPath);
     }
-    else
+    catch (...) {
         next();
+    }
 }
 
 void JukeBox::playMusic(const string &musicPath)
