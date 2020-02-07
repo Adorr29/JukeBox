@@ -5,6 +5,7 @@
 ** User.cpp
 */
 
+#include <algorithm>
 #include <regex>
 #include "User.hpp"
 #include "Error.hpp"
@@ -90,6 +91,8 @@ void User::pasreCommand(const vector<string> &dataTab)
             jukeBox.playMusic(dataTab[1]);
         else if (dataTab.size() == 2 && dataTab[0] == "volume" && regex_search(dataTab[1], match, regex(R"(^([+-]|)(\d+)$)"))) {
             float volume = jukeBox.getVolume();
+            const float volumeMin = 0;
+            const float volumeMax = 100;
 
             if (match[1] == "-")
                 volume -= stof(match[2]);
@@ -97,6 +100,7 @@ void User::pasreCommand(const vector<string> &dataTab)
                 volume += stof(match[2]);
             else
                 volume = stof(match[2]);
+            volume = min(volumeMax, max(volumeMin, volume));
             jukeBox.setVolume(volume);
         }
         else
