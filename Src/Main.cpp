@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     else if (argc == 3)
         SendCommand(argv[1], atoi(argv[2]));
     else if (argc == 4)
-        SendCommand(argv[1], atoi(argv[3]), argv[4]);
+        SendCommand(argv[1], atoi(argv[2]), argv[3]);
     else {
         help(argv[0]);
         return EXIT_FAILURE;
