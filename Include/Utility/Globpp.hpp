@@ -13,5 +13,3 @@
 using namespace std;
 
 vector<string> globpp(const string &pattern);
-
-

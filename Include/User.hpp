@@ -14,7 +14,7 @@ using namespace std;
 
 class JukeBox;
 
-class User : public std::enable_shared_from_this<User>
+class User : public enable_shared_from_this<User>
 {
 public:
     User(IoService &ioService, JukeBox &_jukeBox);

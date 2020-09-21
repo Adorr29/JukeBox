@@ -35,7 +35,7 @@ private:
 private:
     IoService ioService;
     TcpAcceptor acceptor;
-    vector<string> flieNameList;
+    vector<string> fileNameList;
     vector<string> playList;
     list<thread> threadList;
     string currentMusicPath;

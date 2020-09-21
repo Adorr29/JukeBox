@@ -9,14 +9,19 @@
 #include "Utility/Globpp.hpp"
 #include "Error.hpp"
 
+#include <iostream> // tmp for debug log
 JukeBox::JukeBox(const string &musicDirectoryPath, const ushort &port)
     : ioService(),
       acceptor(ioService, TcpEndpoint(TcpV4(), port)),
       noNext(false)
 {
     srand(time(nullptr));
-    flieNameList = getAllFileName(musicDirectoryPath);
-    if (flieNameList.empty())
+    fileNameList = getAllFileName(musicDirectoryPath);
+
+    for (const string &fileName : fileNameList)
+        cerr << fileName << endl;
+
+    if (fileNameList.empty())
         throw ERROR("PlayList is empty");
     next();
     listen();
@@ -25,7 +30,7 @@ JukeBox::JukeBox(const string &musicDirectoryPath, const ushort &port)
 
 JukeBox::~JukeBox()
 {
-    while (!threadList.empty()) {
+    while (!threadList.empty()) { // TODO move in a thread call in ctor
         threadList.front().join();
         threadList.pop_front();
     }
@@ -39,7 +44,7 @@ const string JukeBox::getCurrentMusicPath() const
 void JukeBox::next()
 {
     if (playList.empty())
-        playList = flieNameList;
+        playList = fileNameList;
     const size_t npa = rand() % playList.size();
     const string musicPath = playList[npa];
 
@@ -89,14 +94,17 @@ void JukeBox::onAccept(UserPtr user, const ErrorCode &errorCode)
 vector<string> JukeBox::getAllFileName(const string &directoryPath)
 {
     vector<string> fileNameList = globpp(directoryPath + "/*");
+    vector<string> result;
 
     for (const string &fileName : fileNameList)
         if (fileName.back() == '/') {
-            vector<string> fileNameList2 = getAllFileName(fileName);
+            vector<string> list = getAllFileName(fileName);
 
-            fileNameList.insert(fileNameList.end(), fileNameList2.begin(), fileNameList2.end());
+            result.insert(result.end(), list.begin(), list.end());
         }
-    return fileNameList;
+        else
+            result.push_back(fileName);
+    return result;
 }
 
 void JukeBox::autoNext()
